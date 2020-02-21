@@ -1,0 +1,26 @@
+prototypes:
+  Feed:
+    author: REN-ISAC
+    class: cifv3.Miner
+    development_status: EXPERIMENTAL
+    node_type: miner
+    indicator_types:
+      - IPv4
+      - IPv6
+      - domain
+      - URL
+    tags:
+      - extension
+      - cif
+    description: >
+      Miner for CIFv3 API. Based on CIFv3 SDK.
+    config:
+      source_name: cifv3.Feed
+      indicator_types: [ any ]
+      # age out of indicators
+      age_out:
+        sudden_death: true
+        default: last_seen+30d
+        interval: 3307
+      attributes:
+        share_level: amber

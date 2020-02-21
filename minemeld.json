@@ -1,0 +1,19 @@
+{
+    "version": "3.0.1",
+    "name": "cifv3-miner",
+    "author": "REN-ISAC",
+    "author_email": "soc@ren-isac.net",
+    "description": "MineMeld extension for CIFv3",
+    "entry_points": {
+        "minemeld_webui": {
+            "cifv3Webui": "cifv3:webui_blueprint"
+        },
+        "minemeld_nodes": {
+            "cifv3.Miner": "cifv3.node:Miner"
+        },
+        "minemeld_prototypes": {
+            "cifv3.prototypes": "cifv3:prototypes"
+        }
+    },
+    "manifest_version": 0
+}

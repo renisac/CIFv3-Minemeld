@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+*$py.class
+minemeld_cifv3.egg-info/
+# Environments
+.venv
+venv/
+
+.idea
+*.zip
