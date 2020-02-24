@@ -48,7 +48,7 @@ class Miner(BasePollerFT):
             LOG.error('{} - Error loading side config: {}'.format(self.name, str(e)))
             return
 
-        self.token = sconfig.get('token', None)
+        self.token = sconfig.get('token', self.token)
         if self.token is not None:
             LOG.info('{} - token set'.format(self.name))
 
@@ -61,21 +61,21 @@ class Miner(BasePollerFT):
             else:
                 self.filters = filters
 
-        # for later param parsing by 'requests' library, list of tags needs to form a url
-        # such as /feed?tags=phishing,botnet as CIF server won't handle /feed?tags=phishing&tags=botnet
-        if isinstance(self.filters['tags'], list):
-            self.filters['tags'] = ','.join(map(str, self.filters['tags']))
-
+    def hup(self, source=None):
+        LOG.info('%s - hup received, reload side config', self.name)
+        self._load_side_config()
+        super(Miner, self).hup(source=source)
+                
     def _check_status(self, resp, expect=200):
         if resp.status_code == 400:
             r = json.loads(resp.text)
             raise RuntimeError(r['message'])
 
         if resp.status_code == 401:
-            raise RuntimeError('unauthorized')
+            raise RuntimeError('unauthorized. check token?')
 
         if resp.status_code == 404:
-            raise RuntimeError('not found')
+            raise RuntimeError('not found. check remote api url?')
 
         if resp.status_code == 408:
             raise RuntimeError('timeout')
@@ -142,10 +142,24 @@ class Miner(BasePollerFT):
             raise RuntimeError('{} - remote api is required'.format(self.name))
 
         if self.token is None:
-            raise RuntimeError('{} - remote api is required'.format(self.name))
+            raise RuntimeError('{} - token is required'.format(self.name))
 
         if self.filters is None:
             raise RuntimeError('{} - feed filters are required'.format(self.name))
+            
+        if self.filters.get('itype') is None:
+            raise RuntimeError('{} - itype in feed filters has not been set'.format(self.name))
+
+        if self.filters.get('confidence') is None:
+            raise RuntimeError('{} - confidence in feed filters has not been set'.format(self.name))
+
+        if self.filters.get('tags') is None:
+            raise RuntimeError('{} - tags in feed filters has not been set'.format(self.name))
+
+        # for later param parsing by 'requests' library, list of tags needs to form a url
+        # such as /feed?tags=phishing,botnet as CIF server won't handle /feed?tags=phishing&tags=botnet
+        if isinstance(self.filters['tags'], list):
+            self.filters['tags'] = ','.join(map(str, self.filters['tags']))
 
         LOG.debug('{} - filters: {}'.format(self.name, self.filters))
 

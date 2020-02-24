@@ -108,11 +108,14 @@ function CIFv3SideConfigController($scope, MinemeldConfigService, MineMeldRunnin
     vm.setToken = function() {
         var mi = $modal.open({
             templateUrl: '/extensions/webui/cifv3Webui/cifv3.miner.stoken.modal.html',
-            controller: ['$modalInstance', CIFv3TokenController],
+            controller: ['$modalInstance', 'token', CIFv3TokenController],
             controllerAs: 'vm',
             bindToController: true,
             backdrop: 'static',
-            animation: false
+            animation: false,
+            resolve: {
+                token: () => { return this.token }
+            }
         });
 
         mi.result.then((result) => {
