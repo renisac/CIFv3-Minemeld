@@ -83,7 +83,7 @@ function CIFv3SideConfigController($scope, MinemeldConfigService, MineMeldRunnin
     vm.setRemote = function() {
         var mi = $modal.open({
             templateUrl: '/extensions/webui/cifv3Webui/cifv3.miner.sremote.modal.html',
-            controller: ['$modalInstance', 'remote', CIFv3RemoteController],
+            controller: ['$modalInstance', CIFv3RemoteController],
             controllerAs: 'vm',
             bindToController: true,
             backdrop: 'static',
@@ -159,13 +159,13 @@ function CIFv3SideConfigController($scope, MinemeldConfigService, MineMeldRunnin
     vm.setFilters = function() {
         var mi = $modal.open({
             templateUrl: '/extensions/webui/cifv3Webui/cifv3.miner.sfilters.modal.html',
-            controller: ['$modalInstance', 'filters', CIFv3FiltersController],
+            controller: ['$modalInstance', CIFv3FiltersController],
             controllerAs: 'vm',
             bindToController: true,
             backdrop: 'static',
             animation: false,
             resolve: {
-                filters: () => { return this.filters; }
+                filters: () => { return vm.filters; }
             }
         });
 
