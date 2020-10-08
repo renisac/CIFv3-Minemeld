@@ -3,6 +3,7 @@ from __future__ import absolute_import
 import logging
 import requests
 from minemeld.ft.basepoller import BasePollerFT
+from cifv3 import __version__
 from time import sleep
 import json
 from base64 import b64decode
@@ -170,37 +171,19 @@ class Miner(BasePollerFT):
 
         self.session = requests.Session()
         self.session.headers["Accept"] = 'application/vnd.cif.v3+json'
-        self.session.headers['User-Agent'] = 'minemeld-cifv3'
+        self.session.headers['User-Agent'] = 'minemeld-cifv3/{}'.format(__version__)
         self.session.headers['Authorization'] = 'Token token=' + self.token
         self.session.headers['Content-Type'] = 'application/json'
         self.session.headers['Accept-Encoding'] = 'deflate'
 
-        resp = self.session.get('{}/feed'.format(self.remote), params=self.filters, verify=self.verify_cert, timeout=120)
+        resp = self.session.get('{}/feed'.format(self.remote), params=self.filters, verify=self.verify_cert
+, timeout=120)
 
-        # retries
-        n = 5
-        RETRIES_DELAY = 30
         try:
             self._check_status(resp, expect=200)
-            n = 0
         except Exception as e:
-            if resp.status_code == 429 or resp.status_code in [500, 501, 502, 503, 504]:
-                LOG.error('{} - cif feed error: {}'.format(self.name, e))
-            else:
-                raise
-
-        while n != 0:
-            LOG.warning('{} - setting random retry interval to spread out the load'.format(self.name))
-            LOG.warning('retrying in %.00fs' % RETRIES_DELAY)
-            sleep(RETRIES_DELAY)
-
-            resp = self.session.get('{}/feed'.format(self.remote), params=self.filters, verify=self.verify_cert, timeout=120)
-            if resp.status_code == 200:
-                break
-
-            if n == 0:
-                LOG.error('{} - system seems busy..'.format(self.name))
-                raise
+            LOG.error('{} - cif feed error: {}'.format(self.name, e))
+            raise
 
         data = resp.content
 
@@ -225,6 +208,7 @@ class Miner(BasePollerFT):
             raise
 
         if isinstance(msgs.get('data'), list):
+            LOG.info('{} - Received {} results from cif api'.format(self.name, len(msgs.get('data'))))
             for m in msgs['data']:
                 if m.get('message'):
                     try:

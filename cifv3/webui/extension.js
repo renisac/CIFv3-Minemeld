@@ -262,7 +262,8 @@ function CIFv3FiltersController($modalInstance, filters) {
     ];
 
     vm.defaultTags = [
-        'whitelist',
+        'bruteforce',
+        'uce',
         'spam',
         'malware',
         'scanner',
@@ -271,7 +272,8 @@ function CIFv3FiltersController($modalInstance, filters) {
         'botnet',
         'exploit',
         'phishing',
-        'suspicious'
+        'suspicious',
+        'tor'
     ];
 
     vm.valid = function() {
