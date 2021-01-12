@@ -280,6 +280,7 @@ function CIFv3FiltersController($modalInstance, filters) {
         angular.element('#fgItype').removeClass('has-error');
 	angular.element('#fgConfidence').removeClass('has-error');
 	angular.element('#fgTags').removeClass('has-error');
+	angular.element('#errorText').text('');
 
         if (!vm.filters) {
             return false;
@@ -299,6 +300,12 @@ function CIFv3FiltersController($modalInstance, filters) {
 	    angular.element('#fgTags').addClass('has-error');
 	    return false;
 	}
+	    
+	if (vm.filters.tags.length > 1 && vm.filters.tags.includes('whitelist')) {
+            angular.element('#fgTags').addClass('has-error');
+            angular.element('#errorText').text('Pulling an allow list from CIF must be setup separately (i.e., the tag "whitelist" cannot be grouped with any other tag)');
+            return false;
+        }
 
         return true;
     };
