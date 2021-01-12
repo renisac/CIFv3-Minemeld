@@ -32,6 +32,8 @@ class Miner(BasePollerFT):
         self.filters = self.config.get('filters', None)
         self.fields = ['tlp', 'group', 'reporttime', 'indicator', 'firsttime', 'lasttime', 'count', 'tags',
                        'description', 'confidence', 'rdata', 'provider']
+        
+        self.api_endpoint = '/feed'
 
         self.side_config_path = os.path.join(
             os.environ['MM_CONFIG_DIR'],
@@ -156,11 +158,18 @@ class Miner(BasePollerFT):
 
         if self.filters.get('tags') is None:
             raise RuntimeError('{} - tags in feed filters has not been set'.format(self.name))
-
-        # for later param parsing by 'requests' library, list of tags needs to form a url
-        # such as /feed?tags=phishing,botnet as CIF server won't handle /feed?tags=phishing&tags=botnet
-        if isinstance(self.filters['tags'], list):
-            self.filters['tags'] = ','.join(map(str, self.filters['tags']))
+        elif isinstance(self.filters['tags'], list):
+            if 'whitelist' in self.filters['tags']:
+                # /feed api endpoint doesn't allow whitelist tag due to server-side allowlisting logic
+                self.api_endpoint = '/search'
+                self.filters['limit'] = 50000
+                # allowlists should be their own feed if being pulled through minemeld
+                if len(self.filters['tags']) > 1:
+                    raise RuntimeError('{} - feeds configured with "whitelist" tag cannot contain other tags'.format(self.name))
+                else:
+                    # for later param parsing by 'requests' library, list of tags needs to form a url
+                    # such as /feed?tags=phishing,botnet as CIF server won't handle /feed?tags=phishing&tags=botnet
+                    self.filters['tags'] = ','.join(map(str, self.filters['tags']))
 
         LOG.debug('{} - filters: {}'.format(self.name, self.filters))
 
@@ -176,7 +185,7 @@ class Miner(BasePollerFT):
         self.session.headers['Content-Type'] = 'application/json'
         self.session.headers['Accept-Encoding'] = 'deflate'
 
-        resp = self.session.get('{}/feed'.format(self.remote), params=self.filters, verify=self.verify_cert
+        resp = self.session.get('{}{}'.format(self.remote, self.api_endpoint), params=self.filters, verify=self.verify_cert
 , timeout=120)
 
         try:
