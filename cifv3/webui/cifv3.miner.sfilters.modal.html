@@ -39,6 +39,7 @@
     	<div class="form-group" id="fgTags">
 	    <label class="col-xs-4 control-label">TAGS</label>
 	    <div class="col-xs-6">
+		<span class="help-block text-danger" id="errorText"></span>
 	    	<ui-select multiple ng-model="vm.filters.tags" theme="bootstrap"
 		       on-select="vm.changed = true" on-remove="vm.changed = true">
 		    <ui-select-match placeholder="Not set">{{$item}}</ui-select-match>
