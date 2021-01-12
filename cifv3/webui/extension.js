@@ -272,8 +272,10 @@ function CIFv3FiltersController($modalInstance, filters) {
         'botnet',
         'exploit',
         'phishing',
+	'proxy',
         'suspicious',
-        'tor'
+        'tor',
+	'whitelist'
     ];
 
     vm.valid = function() {
