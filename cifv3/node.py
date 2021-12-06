@@ -166,10 +166,9 @@ class Miner(BasePollerFT):
                 # allowlists should be their own feed if being pulled through minemeld
                 if len(self.filters['tags']) > 1:
                     raise RuntimeError('{} - feeds configured with "whitelist" tag cannot contain other tags'.format(self.name))
-                else:
-                    # for later param parsing by 'requests' library, list of tags needs to form a url
-                    # such as /feed?tags=phishing,botnet as CIF server won't handle /feed?tags=phishing&tags=botnet
-                    self.filters['tags'] = ','.join(map(str, self.filters['tags']))
+            # for later param parsing by 'requests' library, list of tags needs to form a url
+            # such as /feed?tags=phishing,botnet as CIF server won't handle /feed?tags=phishing&tags=botnet
+            self.filters['tags'] = ','.join(map(str, self.filters['tags']))
 
         LOG.debug('{} - filters: {}'.format(self.name, self.filters))
 
