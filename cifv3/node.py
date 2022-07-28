@@ -112,6 +112,9 @@ class Miner(BasePollerFT):
         # translate itype
         if itype in ['ipv4', 'ipv6', 'fqdn', 'url']:
             itype = ITYPE_MAP[itype]
+        elif itype in ['md5', 'sha1', 'sha256', 'ssdeep']:
+            # no mapping needed for these
+            pass
         else:
             LOG.error('{} - unahndled itype {}'.format(self.name, itype))
             return [[None, None]]
