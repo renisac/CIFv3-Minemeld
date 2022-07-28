@@ -9,6 +9,12 @@ prototypes:
       - IPv6
       - domain
       - URL
+      - email-addr
+      - md5
+      - sha1
+      - sha256
+      - ssdeep
+
     tags:
       - extension
       - cif
