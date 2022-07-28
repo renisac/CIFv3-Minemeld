@@ -13,6 +13,7 @@ import os
 LOG = logging.getLogger(__name__)
 
 ITYPE_MAP = {
+    'email': 'email-addr',
     'ipv4': 'IPv4',
     'ipv6': 'IPv6',
     'fqdn': 'domain',
@@ -110,7 +111,7 @@ class Miner(BasePollerFT):
             return [[None, None]]
 
         # translate itype
-        if itype in ['ipv4', 'ipv6', 'fqdn', 'url']:
+        if itype in ['email', 'ipv4', 'ipv6', 'fqdn', 'url']:
             itype = ITYPE_MAP[itype]
         elif itype in ['md5', 'sha1', 'sha256', 'ssdeep']:
             # no mapping needed for these
