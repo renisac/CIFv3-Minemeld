@@ -257,7 +257,8 @@ function CIFv3FiltersController($modalInstance, filters) {
         'md5',
         'sha1',
         'sha256',
-        'sha512', 
+        'sha512',
+        'ssdeep',
         'email'
     ];
 
@@ -275,7 +276,10 @@ function CIFv3FiltersController($modalInstance, filters) {
         'proxy',
         'suspicious',
         'tor',
-	'whitelist'
+        'imphash',
+        'cdn',
+        'ja3',
+	    'whitelist'
     ];
 
     vm.valid = function() {
